@@ -178,20 +178,20 @@ void hq2x_32( unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, int
 
   for (j=0; j<Yres; j++)
   {
-    if (j>0)      prevline = -Xres*2; else prevline = 0;
-    if (j<Yres-1) nextline =  Xres*2; else nextline = 0;
+    if (j>0)      prevline = -Xres*4; else prevline = 0;
+    if (j<Yres-1) nextline =  Xres*4; else nextline = 0;
 
     for (i=0; i<Xres; i++)
     {
-      w[2] = *((unsigned short*)(pIn + prevline));
-      w[5] = *((unsigned short*)pIn);
-      w[8] = *((unsigned short*)(pIn + nextline));
+      w[2] = *((unsigned long*)(pIn + prevline));
+      w[5] = *((unsigned long*)pIn);
+      w[8] = *((unsigned long*)(pIn + nextline));
 
       if (i>0)
       {
-        w[1] = *((unsigned short*)(pIn + prevline - 2));
-        w[4] = *((unsigned short*)(pIn - 2));
-        w[7] = *((unsigned short*)(pIn + nextline - 2));
+        w[1] = *((unsigned long*)(pIn + prevline - 4));
+        w[4] = *((unsigned long*)(pIn - 4));
+        w[7] = *((unsigned long*)(pIn + nextline - 4));
       }
       else
       {
@@ -202,9 +202,9 @@ void hq2x_32( unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, int
 
       if (i<Xres-1)
       {
-        w[3] = *((unsigned short*)(pIn + prevline + 2));
-        w[6] = *((unsigned short*)(pIn + 2));
-        w[9] = *((unsigned short*)(pIn + nextline + 2));
+        w[3] = *((unsigned long*)(pIn + prevline + 4));
+        w[6] = *((unsigned long*)(pIn + 4));
+        w[9] = *((unsigned long*)(pIn + nextline + 4));
       }
       else
       {
@@ -2878,7 +2878,7 @@ void hq2x_32( unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, int
           break;
         }
       }
-      pIn+=2;
+      pIn+=4;
       pOut+=8;
     }
     pOut+=BpL;
@@ -2910,11 +2910,11 @@ int main(int argc, char* argv[])
     return 1;
   }
 
-  if ( ImageIn.m_BitPerPixel != 16 )
+  if ( ImageIn.m_BitPerPixel != 32 )
   {
-    if ( ImageIn.ConvertTo16() != 0 )
+    if ( ImageIn.ConvertTo32() != 0 )
     {
-      printf( "ERROR: '%s' conversion to 16 bit failed\n", szFilenameIn );
+      printf( "ERROR: '%s' conversion to 32 bit failed\n", szFilenameIn );
       return 1;
     }
   }
