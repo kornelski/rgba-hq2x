@@ -49,52 +49,67 @@ const  int   Vmask = 0x000000FF;
 const  int   trY   = 0x00300000;
 const  int   trU   = 0x00000700;
 const  int   trV   = 0x00000006;
+#define unshift(c1,sh) (((c1) >> (sh))&255)
+#define makeargb(a,r,g,b) (((a)<<24) | ((r)<<16) | ((g)<<8) | (b))
+#define coeff3(c1m,c2m,c3m) makeargb(\
+    (unshift(c1,24)*c1m + unshift(c2,24)*c2m + unshift(c3,24)*c3m)/(c1m+c2m+c3m), \
+    (unshift(c1,16)*c1m + unshift(c2,16)*c2m + unshift(c3,16)*c3m)/(c1m+c2m+c3m), \
+    (unshift(c1,8 )*c1m + unshift(c2,8 )*c2m + unshift(c3,8 )*c3m)/(c1m+c2m+c3m), \
+    (unshift(c1,0 )*c1m + unshift(c2,0 )*c2m + unshift(c3,0 )*c3m)/(c1m+c2m+c3m))
 
 inline void Interp1(unsigned char * pc, int c1, int c2)
 {
-  *((int*)pc) = (c1*3+c2) >> 2;
+  int a = unshift(c1,24)*3 + unshift(c2,24);
+  int r = unshift(c1,16)*3 + unshift(c2,16);
+  int g = unshift(c1,8)*3 + unshift(c2,8);
+  int b = unshift(c1,0)*3 + unshift(c2,0);
+
+  *((int*)pc) = makeargb(a/4,r/4,g/4,b/4);
 }
 
 inline void Interp2(unsigned char * pc, int c1, int c2, int c3)
 {
-  *((int*)pc) = (c1*2+c2+c3) >> 2;
+  *((int*)pc) = coeff3(2,1,1);
+
 }
 
 inline void Interp5(unsigned char * pc, int c1, int c2)
 {
-  *((int*)pc) = (c1+c2) >> 1;
+
+    int a = unshift(c1,24) + unshift(c2,24);
+    int r = unshift(c1,16) + unshift(c2,16);
+    int g = unshift(c1,8) + unshift(c2,8);
+    int b = unshift(c1,0) + unshift(c2,0);
+
+    *((int*)pc) = makeargb(a/2,r/2,g/2,b/2);
 }
 
 inline void Interp6(unsigned char * pc, int c1, int c2, int c3)
 {
   //*((int*)pc) = (c1*5+c2*2+c3)/8;
 
-  *((int*)pc) = ((((c1 & 0x00FF00)*5 + (c2 & 0x00FF00)*2 + (c3 & 0x00FF00) ) & 0x0007F800) +
-                 (((c1 & 0xFF00FF)*5 + (c2 & 0xFF00FF)*2 + (c3 & 0xFF00FF) ) & 0x07F807F8)) >> 3;
+  *((int*)pc) = coeff3(5,2,1);
 }
 
 inline void Interp7(unsigned char * pc, int c1, int c2, int c3)
 {
   //*((int*)pc) = (c1*6+c2+c3)/8;
 
-  *((int*)pc) = ((((c1 & 0x00FF00)*6 + (c2 & 0x00FF00) + (c3 & 0x00FF00) ) & 0x0007F800) +
-                 (((c1 & 0xFF00FF)*6 + (c2 & 0xFF00FF) + (c3 & 0xFF00FF) ) & 0x07F807F8)) >> 3;
+  *((int*)pc) = coeff3(6,1,1);
 }
 
 inline void Interp9(unsigned char * pc, int c1, int c2, int c3)
 {
   //*((int*)pc) = (c1*2+(c2+c3)*3)/8;
 
-  *((int*)pc) = ((((c1 & 0x00FF00)*2 + ((c2 & 0x00FF00) + (c3 & 0x00FF00))*3 ) & 0x0007F800) +
-                 (((c1 & 0xFF00FF)*2 + ((c2 & 0xFF00FF) + (c3 & 0xFF00FF))*3 ) & 0x07F807F8)) >> 3;
+  *((int*)pc) = coeff3(2,3,3);
 }
 
 inline void Interp10(unsigned char * pc, int c1, int c2, int c3)
 {
   //*((int*)pc) = (c1*14+c2+c3)/16;
 
-  *((int*)pc) = ((((c1 & 0x00FF00)*14 + (c2 & 0x00FF00) + (c3 & 0x00FF00) ) & 0x000FF000) +
-                 (((c1 & 0xFF00FF)*14 + (c2 & 0xFF00FF) + (c3 & 0xFF00FF) ) & 0x0FF00FF0)) >> 4;
+  *((int*)pc) = coeff3(14,1,1);
 }
 
 
