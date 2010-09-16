@@ -23,8 +23,25 @@
 #include <string.h>
 #include "Image.h"
 
-static int   LUT16to32[65536];
-static int   RGBtoYUV[65536];
+int LUT16to32(int i) {
+    return i;
+}
+
+int RGBtoYUV(int rgb)
+{
+    int a,r,g,b,Y,u,v,i,j,k;
+
+    a = (rgb >> 24) & 255;
+    r = (rgb >> 16) & 255;
+    g = (rgb >> 8) & 255;
+    b = (rgb) & 255;
+
+    Y = (r + g + b) >> 2;
+    u = 128 + ((r - b) >> 2);
+    v = 128 + ((-r + 2*g -b)>>3);
+    return (a << 24) + (Y<<16) + (u<<8) + v;
+}
+
 static int   YUV1, YUV2;
 const  int   Ymask = 0x00FF0000;
 const  int   Umask = 0x0000FF00;
@@ -134,11 +151,11 @@ inline void Interp10(unsigned char * pc, int c1, int c2, int c3)
 
 inline bool Diff(unsigned int w1, unsigned int w2)
 {
-  YUV1 = RGBtoYUV[w1];
-  YUV2 = RGBtoYUV[w2];
   return ( ( abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY ) ||
            ( abs((YUV1 & Umask) - (YUV2 & Umask)) > trU ) ||
            ( abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV ) );
+  YUV1 = RGBtoYUV(w1);
+  YUV2 = RGBtoYUV(w2);
 }
 
 void hq2x_32( unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, int BpL )
@@ -199,7 +216,7 @@ void hq2x_32( unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, int
       int pattern = 0;
       int flag = 1;
 
-      YUV1 = RGBtoYUV[w[5]];
+      YUV1 = RGBtoYUV(w[5]);
 
       for (k=1; k<=9; k++)
       {
@@ -207,17 +224,17 @@ void hq2x_32( unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, int
 
         if ( w[k] != w[5] )
         {
-          YUV2 = RGBtoYUV[w[k]];
           if ( ( abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY ) ||
                ( abs((YUV1 & Umask) - (YUV2 & Umask)) > trU ) ||
                ( abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV ) )
+          YUV2 = RGBtoYUV(w[k]);
             pattern |= flag;
         }
         flag <<= 1;
       }
 
       for (k=1; k<=9; k++)
-        c[k] = LUT16to32[w[k]];
+        c[k] = LUT16to32(w[k]);
 
       switch (pattern)
       {
@@ -2868,26 +2885,6 @@ void hq2x_32( unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, int
   }
 }
 
-void InitLUTs(void)
-{
-  int i, j, k, r, g, b, Y, u, v;
-
-  for (i=0; i<65536; i++)
-    LUT16to32[i] = ((i & 0xF800) << 8) + ((i & 0x07E0) << 5) + ((i & 0x001F) << 3);
-
-  for (i=0; i<32; i++)
-  for (j=0; j<64; j++)
-  for (k=0; k<32; k++)
-  {
-    r = i << 3;
-    g = j << 2;
-    b = k << 3;
-    Y = (r + g + b) >> 2;
-    u = 128 + ((r - b) >> 2);
-    v = 128 + ((-r + 2*g -b)>>3);
-    RGBtoYUV[ (i << 11) + (j << 5) + k ] = (Y<<16) + (u<<8) + v;
-  }
-}
 
 int main(int argc, char* argv[])
 {
@@ -2929,8 +2926,6 @@ int main(int argc, char* argv[])
     printf( "ERROR: ImageOut.Init()\n" );
     return 1;
   };
-
-  InitLUTs();
 
   hq2x_32( ImageIn.m_pBitmap, ImageOut.m_pBitmap, ImageIn.m_Xres, ImageIn.m_Yres, ImageOut.m_Xres*4 );
 
