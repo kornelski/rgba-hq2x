@@ -21,10 +21,10 @@
 #include <string.h>
 #include "Image.h"
 
-CImage::CImage() 
-{ 
-  m_Xres = m_Yres = m_NumPixel = 0; 
-  m_pBitmap = NULL; 
+CImage::CImage()
+{
+  m_Xres = m_Yres = m_NumPixel = 0;
+  m_pBitmap = NULL;
 }
 
 CImage::~CImage()
@@ -359,9 +359,9 @@ int CImage::SaveBmp(char *szFilename)
     {
       pBuf-=m_Xres;
       if (fwrite(pBuf, m_Xres, 1, f) != 1) return eSaveBmpFileWrite;
-      if (SuffLen>0) 
-      { 
-        if (fwrite(&Dummy, SuffLen, 1, f) != 1) return eSaveBmpFileWrite; 
+      if (SuffLen>0)
+      {
+        if (fwrite(&Dummy, SuffLen, 1, f) != 1) return eSaveBmpFileWrite;
       }
     }
   }
@@ -389,8 +389,8 @@ int CImage::SaveBmp(char *szFilename)
     {
       pBuf-=m_Xres*3;
       if (fwrite(pBuf, m_Xres*3, 1, f) != 1) return eSaveBmpFileWrite;
-      if (SuffLen>0) 
-      { 
+      if (SuffLen>0)
+      {
         if (fwrite(&Dummy, SuffLen, 1, f) != 1) return eSaveBmpFileWrite;
       }
     }
@@ -409,7 +409,7 @@ int CImage::LoadBmp(char *szFilename)
   _BMPIMAGEHEADEROLD ih_old;
   _BMPIMAGEHEADER    ih;
   unsigned char      BmpPal[256][4];
-  long int           biSize; 
+  long int           biSize;
   long int           SuffLen;
   long int           Dummy = 0;
   unsigned char    * pBuf;
@@ -455,12 +455,12 @@ int CImage::LoadBmp(char *szFilename)
     {
       pBuf-=m_Xres;
       if (fread(pBuf, m_Xres, 1, f) != 1) return eLoadBmpFileRead;
-      if (SuffLen>0) 
-      { 
-        if (fread(&Dummy, SuffLen, 1, f) != 1) return eLoadBmpFileRead; 
+      if (SuffLen>0)
+      {
+        if (fread(&Dummy, SuffLen, 1, f) != 1) return eLoadBmpFileRead;
       }
     }
-  } 
+  }
   else
   if (m_BitPerPixel==24)
   {
@@ -471,13 +471,13 @@ int CImage::LoadBmp(char *szFilename)
     {
       pBuf-=m_Xres*3;
       if (fread(pBuf, m_Xres*3, 1, f) != 1) return eLoadBmpFileRead;
-      if (SuffLen>0) 
-      { 
-        if (fread(&Dummy, SuffLen, 1, f) != 1) return eLoadBmpFileRead; 
+      if (SuffLen>0)
+      {
+        if (fread(&Dummy, SuffLen, 1, f) != 1) return eLoadBmpFileRead;
       }
     }
-  } 
-  else 
+  }
+  else
     return eLoadBmpColorDepth;
 
   fclose(f);
@@ -541,7 +541,7 @@ int CImage::SaveTga(char *szFilename, bool bCompressed )
     fh.tiPaletteBpp   = 24;
     if (fwrite(&fh, sizeof(fh), 1, f) != 1) return eSaveTgaFileWrite;
 
-    if (fwrite(&m_Pal, 3, fh.tiPaletteSize, f) != fh.tiPaletteSize) 
+    if (fwrite(&m_Pal, 3, fh.tiPaletteSize, f) != fh.tiPaletteSize)
       return eSaveTgaFileWrite;
 
     unsigned char * pcolBuf = m_pBitmap;
@@ -552,7 +552,7 @@ int CImage::SaveTga(char *szFilename, bool bCompressed )
       for (j=0; j<m_Yres; j++)
       {
         pcolBuf -= m_Xres;
-        if (fwrite(pcolBuf, 1, m_Xres, f) != (size_t)m_Xres) 
+        if (fwrite(pcolBuf, 1, m_Xres, f) != (size_t)m_Xres)
           return eSaveTgaFileWrite;
       }
     }
@@ -579,7 +579,7 @@ int CImage::SaveTga(char *szFilename, bool bCompressed )
               nDif++;
             else
             {
-              if ( bEqual ) 
+              if ( bEqual )
                 nRep = 1;
               nDif -= nRep;
               if ( nDif > 0 )
@@ -632,7 +632,7 @@ int CImage::SaveTga(char *szFilename, bool bCompressed )
       for (j=0; j<m_Yres; j++)
       {
         pcolBuf -= m_Xres;
-        if (fwrite(pcolBuf, sizeof(_BGR), m_Xres, f) != (size_t)m_Xres) 
+        if (fwrite(pcolBuf, sizeof(_BGR), m_Xres, f) != (size_t)m_Xres)
           return eSaveTgaFileWrite;
       }
     }
@@ -659,7 +659,7 @@ int CImage::SaveTga(char *szFilename, bool bCompressed )
               nDif++;
             else
             {
-              if ( bEqual ) 
+              if ( bEqual )
                 nRep = 1;
               nDif -= nRep;
               if ( nDif > 0 )
@@ -713,7 +713,7 @@ int CImage::SaveTga(char *szFilename, bool bCompressed )
       for (j=0; j<m_Yres; j++)
       {
         pcolBuf -= m_Xres;
-        if (fwrite(pcolBuf, sizeof(_BGRA), m_Xres, f) != (size_t)m_Xres) 
+        if (fwrite(pcolBuf, sizeof(_BGRA), m_Xres, f) != (size_t)m_Xres)
           return eSaveTgaFileWrite;
       }
     }
@@ -733,8 +733,8 @@ int CImage::SaveTga(char *szFilename, bool bCompressed )
         {
           colOld = colCur;
           colCur = *(pcolBuf+i);
-          bEqual = (colOld.r == colCur.r) && 
-                   (colOld.g == colCur.g) && 
+          bEqual = (colOld.r == colCur.r) &&
+                   (colOld.g == colCur.g) &&
                    (colOld.b == colCur.b) &&
                    (colOld.a == colCur.a);
           if ( nRep == 0 )
@@ -743,7 +743,7 @@ int CImage::SaveTga(char *szFilename, bool bCompressed )
               nDif++;
             else
             {
-              if ( bEqual ) 
+              if ( bEqual )
                 nRep = 1;
               nDif -= nRep;
               if ( nDif > 0 )
@@ -802,7 +802,7 @@ int CImage::LoadTga(char *szFilename)
   if ((fh.tiBitPerPixel<=0) || (fh.tiBitPerPixel>32))
     return eLoadTgaBadFormat;
 
-  if ( Init( fh.tiXres, fh.tiYres, fh.tiBitPerPixel ) != 0 ) 
+  if ( Init( fh.tiXres, fh.tiYres, fh.tiBitPerPixel ) != 0 )
     return eLoadTgaInit;
 
   if ( m_BitPerPixel == 8 )
@@ -811,7 +811,7 @@ int CImage::LoadTga(char *szFilename)
     {
       if ( fh.tiPaletteBpp == 24)
       {
-        if (fread(&m_Pal, 3, fh.tiPaletteSize, f) != fh.tiPaletteSize) 
+        if (fread(&m_Pal, 3, fh.tiPaletteSize, f) != fh.tiPaletteSize)
           return eLoadTgaFileRead;
       }
       else
@@ -819,7 +819,7 @@ int CImage::LoadTga(char *szFilename)
       {
         unsigned char BmpPal[256][4];
 
-        if (fread(&BmpPal, 4, fh.tiPaletteSize, f) != fh.tiPaletteSize) 
+        if (fread(&BmpPal, 4, fh.tiPaletteSize, f) != fh.tiPaletteSize)
           return eLoadTgaFileRead;
 
         for (i=0; i<fh.tiPaletteSize; i++)
@@ -848,7 +848,7 @@ int CImage::LoadTga(char *szFilename)
       for (j=0; j<m_Yres; j++)
       {
         pcolBuf -= m_Xres;
-        if (fread(pcolBuf, 1, m_Xres, f) != (size_t)m_Xres) 
+        if (fread(pcolBuf, 1, m_Xres, f) != (size_t)m_Xres)
           return eLoadTgaFileRead;
       }
     }
@@ -906,7 +906,7 @@ int CImage::LoadTga(char *szFilename)
       for (j=0; j<m_Yres; j++)
       {
         pcolBuf -= m_Xres;
-        if (fread(pcolBuf, sizeof(_BGR), m_Xres, f) != (size_t)m_Xres) 
+        if (fread(pcolBuf, sizeof(_BGR), m_Xres, f) != (size_t)m_Xres)
           return eLoadTgaFileRead;
       }
     }
@@ -968,7 +968,7 @@ int CImage::LoadTga(char *szFilename)
       for (j=0; j<m_Yres; j++)
       {
         pcolBuf -= m_Xres;
-        if (fread(pcolBuf, sizeof(_BGRA), m_Xres, f) != (size_t)m_Xres) 
+        if (fread(pcolBuf, sizeof(_BGRA), m_Xres, f) != (size_t)m_Xres)
           return eLoadTgaFileRead;
       }
     }
@@ -1021,7 +1021,7 @@ int CImage::LoadTga(char *szFilename)
       }
     }
   }
-  else 
+  else
     return eLoadTgaColorDepth;
 
   fclose(f);
@@ -1033,12 +1033,12 @@ int CImage::Load(char *szFilename)
 {
   int nRes = 0;
 
-  if ( szFilename != NULL ) 
+  if ( szFilename != NULL )
   {
     char * szExt = strrchr( szFilename, '.' );
     int nNotTGA = 1;
 
-    if ( szExt != NULL ) 
+    if ( szExt != NULL )
       nNotTGA = _stricmp( szExt, ".tga" );
 
     if ( nNotTGA != 0 )
@@ -1057,11 +1057,11 @@ int CImage::Save(char *szFilename)
   int nRes = 0;
   int nNotTGA = 1;
 
-  if ( szFilename != NULL ) 
+  if ( szFilename != NULL )
   {
     char * szExt = strrchr( szFilename, '.' );
 
-    if ( szExt != NULL ) 
+    if ( szExt != NULL )
       nNotTGA = _stricmp( szExt, ".tga" );
 
     if ( nNotTGA != 0 )

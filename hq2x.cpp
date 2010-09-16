@@ -2897,7 +2897,7 @@ int main(int argc, char* argv[])
   CImage      ImageOut;
   char      * szFilenameIn;
   char      * szFilenameOut;
-  
+
   if (argc <= 2)
   {
     printf("\nUsage: hq2x.exe input.bmp output.bmp\n");
@@ -2920,7 +2920,7 @@ int main(int argc, char* argv[])
     return 1;
   }
 
-  if ( ImageIn.m_BitPerPixel != 16 ) 
+  if ( ImageIn.m_BitPerPixel != 16 )
   {
     if ( ImageIn.ConvertTo16() != 0 )
     {

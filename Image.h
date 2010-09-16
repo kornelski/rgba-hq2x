@@ -65,7 +65,7 @@ class CImage
   struct _BMPFILEHEADER
   {
     unsigned short bfType;
-    long int       bfSize, bfRes1, bfOffBits; 
+    long int       bfSize, bfRes1, bfOffBits;
   };
 
   struct _BMPIMAGEHEADEROLD
@@ -81,7 +81,7 @@ class CImage
     unsigned short biPlanes, biBitCount;
     long int       biCompression, biSizeImage;
     long int       biXPelsPerMeter, biYPelsPerMeter;
-    long int       biClrUsed, biClrImportant; 
+    long int       biClrUsed, biClrImportant;
   };
 
   struct _TGAHEADER
