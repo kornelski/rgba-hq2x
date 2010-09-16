@@ -17,7 +17,6 @@
 //Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #include <stdlib.h>
-#include <malloc.h>
 #include <string.h>
 #include "Image.h"
 
@@ -1039,7 +1038,7 @@ int CImage::Load(char *szFilename)
     int nNotTGA = 1;
 
     if ( szExt != NULL )
-      nNotTGA = _stricmp( szExt, ".tga" );
+      nNotTGA = strcmp( szExt, ".tga" );
 
     if ( nNotTGA != 0 )
       nRes = LoadBmp( szFilename );
@@ -1062,7 +1061,7 @@ int CImage::Save(char *szFilename)
     char * szExt = strrchr( szFilename, '.' );
 
     if ( szExt != NULL )
-      nNotTGA = _stricmp( szExt, ".tga" );
+      nNotTGA = strcmp( szExt, ".tga" );
 
     if ( nNotTGA != 0 )
     {

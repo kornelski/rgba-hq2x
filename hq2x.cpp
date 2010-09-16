@@ -19,9 +19,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <conio.h>
+
 #include <string.h>
-#include <windows.h>
 #include "Image.h"
 
 static int   LUT16to32[65536];
@@ -2907,12 +2906,6 @@ int main(int argc, char* argv[])
 
   szFilenameIn = argv[1];
   szFilenameOut = argv[2];
-
-  if ( GetFileAttributes( szFilenameIn ) == -1 )
-  {
-    printf( "ERROR: file '%s'\n not found", szFilenameIn );
-    return 1;
-  }
 
   if ( ImageIn.Load( szFilenameIn ) != 0 )
   {
