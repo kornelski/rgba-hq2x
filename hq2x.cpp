@@ -46,9 +46,12 @@ static int   YUV1, YUV2;
 const  int   Ymask = 0x00FF0000;
 const  int   Umask = 0x0000FF00;
 const  int   Vmask = 0x000000FF;
-const  int   trY   = 0x00300000;
+const  int   Amask = 0xFF000000;
+const  int   trY   = 0x00400000;
 const  int   trU   = 0x00000700;
 const  int   trV   = 0x00000006;
+const  int   trA   = 0x50000000;
+
 #define unshift(c1,sh) (((c1) >> (sh))&255)
 #define makeargb(a,r,g,b) (((a)<<24) | ((r)<<16) | ((g)<<8) | (b))
 
@@ -193,13 +196,19 @@ inline void Interp10(unsigned char * pc, int c1, int c2, int c3)
 
 
 
+inline bool YDiff(unsigned int YUV1, unsigned int YUV2)
+{
+    return ( ( abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY ) ||
+             ( abs((YUV1 & Amask) - (YUV2 & Amask)) > trA ) ||
+             ( abs((YUV1 & Umask) - (YUV2 & Umask)) > trU ) ||
+             ( abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV ) );
+}
+
 inline bool Diff(unsigned int w1, unsigned int w2)
 {
-  return ( ( abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY ) ||
-           ( abs((YUV1 & Umask) - (YUV2 & Umask)) > trU ) ||
-           ( abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV ) );
   YUV1 = RGBtoYUV(w1);
   YUV2 = RGBtoYUV(w2);
+  return YDiff(YUV1, YUV2);
 }
 
 void hq2x_32( unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, int BpL )
@@ -268,10 +277,8 @@ void hq2x_32( unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, int
 
         if ( w[k] != w[5] )
         {
-          if ( ( abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY ) ||
-               ( abs((YUV1 & Umask) - (YUV2 & Umask)) > trU ) ||
-               ( abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV ) )
           YUV2 = RGBtoYUV(w[k]);
+          if (YDiff(YUV1,YUV2))
             pattern |= flag;
         }
         flag <<= 1;
