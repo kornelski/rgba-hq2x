@@ -51,6 +51,9 @@ const  int   trU   = 0x00000700;
 const  int   trV   = 0x00000006;
 #define unshift(c1,sh) (((c1) >> (sh))&255)
 #define makeargb(a,r,g,b) (((a)<<24) | ((r)<<16) | ((g)<<8) | (b))
+
+#define fixalpha(c1,c2) if (unshift(c1,24)<5 && unshift(c2,24)>10) c1=((c1)&0xFF000000) + ((c2)&0x00FFFFFF);
+
 #define coeff3(c1m,c2m,c3m) makeargb(\
     (unshift(c1,24)*c1m + unshift(c2,24)*c2m + unshift(c3,24)*c3m)/(c1m+c2m+c3m), \
     (unshift(c1,16)*c1m + unshift(c2,16)*c2m + unshift(c3,16)*c3m)/(c1m+c2m+c3m), \
@@ -59,6 +62,9 @@ const  int   trV   = 0x00000006;
 
 inline void Interp1(unsigned char * pc, int c1, int c2)
 {
+  fixalpha(c1,c2);
+  fixalpha(c2,c1);
+
   int a = unshift(c1,24)*3 + unshift(c2,24);
   int r = unshift(c1,16)*3 + unshift(c2,16);
   int g = unshift(c1,8)*3 + unshift(c2,8);
@@ -69,12 +75,19 @@ inline void Interp1(unsigned char * pc, int c1, int c2)
 
 inline void Interp2(unsigned char * pc, int c1, int c2, int c3)
 {
+  fixalpha(c1,c2);
+  fixalpha(c2,c3);
+  fixalpha(c3,c1);
+
   *((int*)pc) = coeff3(2,1,1);
 
 }
 
 inline void Interp5(unsigned char * pc, int c1, int c2)
 {
+
+    fixalpha(c1,c2);
+    fixalpha(c2,c1);
 
     int a = unshift(c1,24) + unshift(c2,24);
     int r = unshift(c1,16) + unshift(c2,16);
@@ -88,12 +101,20 @@ inline void Interp6(unsigned char * pc, int c1, int c2, int c3)
 {
   //*((int*)pc) = (c1*5+c2*2+c3)/8;
 
+  fixalpha(c1,c2);
+  fixalpha(c2,c3);
+  fixalpha(c3,c1);
+
   *((int*)pc) = coeff3(5,2,1);
 }
 
 inline void Interp7(unsigned char * pc, int c1, int c2, int c3)
 {
   //*((int*)pc) = (c1*6+c2+c3)/8;
+
+  fixalpha(c1,c2);
+  fixalpha(c2,c3);
+  fixalpha(c3,c1);
 
   *((int*)pc) = coeff3(6,1,1);
 }
@@ -102,12 +123,20 @@ inline void Interp9(unsigned char * pc, int c1, int c2, int c3)
 {
   //*((int*)pc) = (c1*2+(c2+c3)*3)/8;
 
+  fixalpha(c1,c2);
+  fixalpha(c2,c3);
+  fixalpha(c3,c1);
+
   *((int*)pc) = coeff3(2,3,3);
 }
 
 inline void Interp10(unsigned char * pc, int c1, int c2, int c3)
 {
   //*((int*)pc) = (c1*14+c2+c3)/16;
+
+  fixalpha(c1,c2);
+  fixalpha(c2,c3);
+  fixalpha(c3,c1);
 
   *((int*)pc) = coeff3(14,1,1);
 }
